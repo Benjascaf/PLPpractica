@@ -116,3 +116,30 @@ lengthF (_ : xs) = 1.0 + lengthF xs
 --c Esto de calcular na variable para cada "iteracion", no jode a la complejidad?
 todosIguales :: [Int] -> Bool 
 todosIguales xs = all (\x -> x == head xs) xs
+
+-- Ejercicio 5
+-- Dado el siguiente modelo para árboles binarios:
+-- data AB a = Nil | Bin (AB a) a (AB a)
+-- definir las siguientes funciones:
+-- a. vacioAB :: AB a → Bool que indica si un árbol es vacío (i.e. no tiene nodos).
+-- b. negacionAB :: AB Bool → AB Bool que dado un árbol de booleanos construye otro formado por la negación
+-- de cada uno de los nodos.
+-- c. productoAB :: AB Int → Int que calcula el producto de todos los nodos del árbol.
+
+data AB a = Nil | Bin (AB a) a (AB a) deriving (Show) --Para poder imprimirlo a consola
+
+--a 
+--Esta bien?
+vacioAB :: AB a -> Bool 
+vacioAB Nil = True
+vacioAB _ = False
+
+--b
+negacionAB :: AB Bool -> AB Bool
+negacionAB Nil = Nil
+negacionAB (Bin i r d) =  Bin (negacionAB i) (not r) (negacionAB d)
+
+--c 
+productoAB :: AB Int -> Int 
+productoAB Nil = 1 --Este caso base esta bien?
+productoAB (Bin i r d) = productoAB i * r * productoAB d
