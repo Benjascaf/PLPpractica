@@ -10,3 +10,5 @@ entrelazar (x:xs) = \ys -> if null ys
                     else x : head ys : entrelazar xs (tail ys)
 
 --mepa que no, porque en el primero haces uso de xs, y en el segundo tenes dos llamados recursivos
+entrelazar' :: [a] -> [a] -> [a] 
+entrelazar' = foldr (\x rec' -> \ys -> if null ys then x : rec' [] else x : head ys : rec' (tail ys)) id

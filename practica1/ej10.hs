@@ -20,3 +20,7 @@ iterateN n f x = generateBase (\l -> length l > n) x f
 --IV Noc como usar stop en este contexto
 -- generateFromI :: ([a] -> Bool) -> ([a] -> a) -> [a] -> [a]
 -- generateFromI stop next xs = takeWhile stop (iterate next xs)
+
+generateFrom' :: ([a] -> Bool) -> ([a] -> a) -> [a] -> [a]
+generateFrom' stop next xs = last (takeWhile (not . stop) (iterate (\ys -> ys ++ [next ys]) xs))
+

@@ -143,3 +143,20 @@ negacionAB (Bin i r d) =  Bin (negacionAB i) (not r) (negacionAB d)
 productoAB :: AB Int -> Int 
 productoAB Nil = 1 --Este caso base esta bien?
 productoAB (Bin i r d) = productoAB i * r * productoAB d
+
+# natural(cero).
+# natural(suc(X)) :- natural(X). 
+# mayorOIgual(X,X) :- natural(X).
+# mayorOIgual(suc(X),Y) :- mayorOIgual(X, Y).
+
+# Ej 21
+# analfabeto(X) :- vivo(X), noSabeLeer(X). 
+# mesa(salame).
+# noSabeLeer(X) :- mesa(X).
+# vivo(X) :- delfín(X). 
+# noSabeLeer(X) :- delfín(X).
+# inteligente(flipper). 
+# delfín(flipper).
+# inteligente(alan)
+
+# Ej 22
