@@ -169,9 +169,14 @@ coprimos(X,Y) :- generarPares(X,Y), gcd(X,Y) =:= 1.
 %Ej15
 %I cuadradoSemilatino(+N, -XS)
 todosPositivos([]).
-todosPositivos([X|Xs]) :- X >= 0, todosPositivos(Xs).
+todosPositivos([X|Xs]) :- desde2(0, X), todosPositivos(Xs).
 filasSemilatinas(_, []).
-filasSemilatinas(N, [H|Xs]) :-  length(H, N),todosPositivos(H), filasSemilatinas(N, Xs), sum_list(H, Sum), Sum is N.
+filasSemilatinas(N, [H|Xs]) :-  desde2(0, Sum),sum_list(H, Sum), length(H, N), filasSemilatinas(N, Xs),  Sum is N.
 
 cuadradoSemilatino(N, Xs) :- filasSemilatinas(N, Xs), length(Xs, N).
+
+filasSemilatinas2(0, _, []).
+filasSemilatinas2(N, Sum, [H]) :- length(H, N), sum_list(H, Acc).
+filasSemilatinas2(N, Acc, [H|Xs]) :- length(H, N), sum_list(H, Acc), filasSemilatinas2(N, Acc, Xs).
+cuadradoSemilatino2(N, Xs) :- desde2(0, Sum), filasSemilatinas2(N, Sum, Xs), length(Xs, N).
 
