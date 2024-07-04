@@ -44,8 +44,7 @@ sufijo(Xs, L) :- append(_, Xs,L).
 
 %V
 sublista([], _).
-sublista([X|Xs], [X|L]) :- append(Xs, _, L).
-sublista(Xs, [_|L]) :- sublista(Xs, L).
+sublista(S, L) :- prefijo(P, L), sufijo(S,P), S \= [].
 
 %VI
 pertenece(X, L) :- prefijo(S, L), append(_, [X], S).
@@ -167,16 +166,91 @@ generarPares(X,Y) :- desde2(2,S), paresSuman(S,X,Y).
 coprimos(X,Y) :- generarPares(X,Y), gcd(X,Y) =:= 1.
 
 %Ej15
-%I cuadradoSemilatino(+N, -XS)
-todosPositivos([]).
-todosPositivos([X|Xs]) :- desde2(0, X), todosPositivos(Xs).
-filasSemilatinas(_, []).
-filasSemilatinas(N, [H|Xs]) :-  desde2(0, Sum),sum_list(H, Sum), length(H, N), filasSemilatinas(N, Xs),  Sum is N.
+filaSemilatina(0,0,[]).
+filaSemilatina(0, N,[0|L]) :- N > 0, N2 is N -1, filaSemilatina(0, N2, L).
+filaSemilatina(S, N, [X|L]) :- S > 0, N > 0, N2 is N - 1, between(0, S, X), S2 is S - X, filaSemilatina(S2, N2, L).
 
-cuadradoSemilatino(N, Xs) :- filasSemilatinas(N, Xs), length(Xs, N).
+filasSemilatinas(_, 0, _, []).
+filasSemilatinas(S, N, N2, [F|L]) :- N > 0, N3 is N - 1, filaSemilatina(S, N2, F), filasSemilatinas(S, N3, N2, L).
 
-filasSemilatinas2(0, _, []).
-filasSemilatinas2(N, Sum, [H]) :- length(H, N), sum_list(H, Acc).
-filasSemilatinas2(N, Acc, [H|Xs]) :- length(H, N), sum_list(H, Acc), filasSemilatinas2(N, Acc, Xs).
-cuadradoSemilatino2(N, Xs) :- desde2(0, Sum), filasSemilatinas2(N, Sum, Xs), length(Xs, N).
+cuadradoSemilatino(N, L) :- desde(0, S), filasSemilatinas(S, N, N, L).
 
+% Falta sumar columnas pero no quiero pensar
+% cuadradoMagico(N, [X|XS]) :- cuadradoSemilatino(N, Xs), sum_list(X, S), columnasSuman(S, [X|Xs]).
+
+%Ej 16
+esTriangulo(tri(A,B,C)) :- A < B+C, B < A+C, C < B+A.
+
+
+perimetro(tri(A,B,C),P) :- ground(tri(A,B,C)), esTriangulo(tri(A,B,C)), P is A+B+C.
+perimetro(tri(A,B,C),P) :- not(ground(tri(A,B,C))), armarTriplas(P,A,B,C), esTriangulo(tri(A,B,C)).
+
+
+
+armarTriplas(P,A,B,C) :- desde2(3,P), between(0,P,A), S is P-A, between(0,S,B), C is S-B.
+
+
+
+triangulos(T) :- perimetro(T,_).
+
+%Ej 18
+%I La consulta va a instanciar a Y de manera que "cumpla" el predicado P, y luego 
+% se mete en el not, que fallara si esa instancia de Y cumple Q.
+
+%II En este caso, el not va primero por lo que Y no es una variable instanciada
+% asi que el not va a fallar si existe alguna posible instancia de Y que cumpla Q,
+%lueago, si el not no falla, se instancia Y de manera que cumpla P.
+
+%III P(Y), not((P(Y2), Y2 /= Y)).
+
+%Ej 19
+% corteMasParejo(+L,-L1,-L2)
+corteMasParejo(L,L1,L2) :- unCorte(L,L1,L2,D), not((unCorte(L,_,_,D2), D2 < D)).
+
+unCorte(L,L1,L2,D) :- append(L1,L2,L), sumlist(L1,S1), sumlist(L2,S2), D is abs(S1-S2).
+
+%Ej 20
+% masChico(X) :- P(X), not((P(Y), Y < X)).
+
+%Ej 21
+% I conjuntoDeNaturales(X) :- not((pertenece(Y, X), not(nat(Y))))
+
+% II Se necesita que el conjunto X ya este instanciado, pues se hace uso del pertenece/2,
+% pero supongamos que no fuese el caso que el mismo no es reversible, entonces conjuntoDeNaturales/1 
+% no tendria la funcionalidad deseada, pues el mismo revisaria que todos los conjuntos posibles sean solo de naturales.
+
+%III La alternativa falla porque el primer not va a revisar que no halla 
+% instanciacion posible para E tal que el mismo sea natural, por lo que el mismo falla, 
+% causando que el not externo siempre devuelva true.
+
+%Ej 22 no lo hice :(
+
+%Ej 23
+% Predicados magicos:
+% esNodo(G, X).
+% esArista(G, X, Y).
+
+% I 
+% caminoSimple(G, D, H, L) :- aux(G, D, H, L, []).
+% aux(G, H, H, [H], _).
+% aux(G, D, H, [D|L], V) :- esArista(G, D, D2), not(member(D2, V)), aux(G, D2, H, L, [D|V]).
+
+% II
+% caminoHamiltoniano(G, L) :- esNodo(G, D), esNodo(G, H), esCaminoSimple(G, D, H, L), not((esNodo(G, X), not (member(X, L))))
+
+
+%III no me acuerdo :(
+
+%IV
+% esEstrella(G) :- esNodo(G, V), not((esArista(G, Z, W), Z \= V, W \= V)).
+
+%Ej 24
+
+%Ej I PROBLEMA: Como vimos en el repaso, aca hay doble generacion infinita, por 
+% lo que se va el arbol infinitamente hacia la derecha, podemos limitar por nivel/cantidad de nodos pero paja
+arbol(nil).
+arbol(bin(AI, _, AD)) :- arbol(AI), arbol(AD).
+
+%Ej II 
+nodosEn(nil, _).
+nodosEn(bin(I, V, D), L) :- arbol(bin(I, V, D)), member(V, L), nodosEn(I, L), nodosEn(D, L).
