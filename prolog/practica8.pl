@@ -254,3 +254,187 @@ arbol(bin(AI, _, AD)) :- arbol(AI), arbol(AD).
 %Ej II 
 nodosEn(nil, _).
 nodosEn(bin(I, V, D), L) :- arbol(bin(I, V, D)), member(V, L), nodosEn(I, L), nodosEn(D, L).
+
+
+sublistaMasLargaDePrimos(L,P) :- sublistaDePrimosDeLong(L,P,Long), not((sublistaDePrimosDeLong(L,_,Long2), Long2 > Long)).
+
+sublistaDePrimosDeLong(L,P,Long) :- sublista(L,P), soloPrimos(P), length(P,Long).
+
+sublista(_,[]).
+sublista(L,S) :- append(P,_,L), append(_,S,P), S \= [].
+
+soloPrimos(L) :- not((member(X,L), not(esPrimo(X)))).
+
+% esPrimo(+P)
+esPrimo(P) :- P \= 1, P2 is P-1, not((between(2,P2,D), mod(P,D) =:= 0)).
+
+
+natural(suc(X)) :- natural(X).
+natural(cero).
+
+
+menor(cero,suc(X)) :- natural(X).
+menor(suc(X),suc(Y)) :- menor(X,Y).
+
+
+%entre(1,3,Z).
+% Z = 1;
+% Z = 2;
+% Z = 3;
+% false.
+
+
+% entre(X,Y,X) :- X =< Y.
+% entre(X,Y,Z) :- X < Y, X2 is X+1, entre(X2,Y,Z). 
+
+
+
+
+
+% long([],0).
+% long([X|XS],N) :- long(XS,N2), N is N2+1.
+
+% scr([],[]).
+% scr([X],[X]).
+% scr([X,X|XS],L) :- scr([X|XS],L).
+% scr([X,Y|XS],[X|L]) :- X \= Y, scr([Y|XS],L).
+
+% partes([],[]).
+% partes([X|XS],[X|L]) :- partes(XS,L).
+% partes([_|XS],L) :- partes(XS,L).
+
+% prefijo(L,P) :- append(P,_,L).
+
+% insertar(X,L,LX) :- append(I,D,L),append(I,[X|D],LX).
+
+% permutacion([],[])
+% permutacion([X|XS],P) :- permutacion(XS,L), insertar(X,L,P).
+
+
+% iesimo(0,[X|_],X).
+% iesimo(I,[_|XS],X) :- iesimo(I2,XS,X), I is I2 + 1.
+
+% desde2(X,X).
+% desde2(X,Y) :- var(Y), N is X+1, desde2(N,Y).
+% desde2(X,Y) :- nonvar(Y), X < Y.
+
+% pmq(X,Y) :- between(0,X,Y), Y mod 2 =:= 0.
+
+% paresSuman(S,X,Y) :- S1 is S-1, between(1,S1,X), Y is S-X.  
+
+% generarPares(X,Y) :- desde2(2,S), paresSuman(S,X,Y).
+
+% coprimos(X,Y) :- generarPares(X,Y), gcd(X,Y) =:= 1. 
+
+
+% altaMateria(plp).
+% altaMateria(aa).
+% altaMateria(metnum).
+
+% liviana(plp).
+% liviana(aa).
+% liviana(eci).
+
+% obligatoria(plp).
+% obligatoria(metnum).
+
+% leGusta(M) :- altaMateria(M).
+% leGusta(M) :- liviana(M).
+
+% hacer(M) :- leGusta(M), obligatoria(M).
+
+% hacerV2(M) :- setof(X,(leGusta(X),obligatoria(X)),L), member(M,L).
+
+
+% corteMasParejo(+L,-L1,-L2)
+corteMasParejo(L,L1,L2) :- unCorte(L,L1,L2,D), not((unCorte(L,_,_,D2), D2 < D)).
+
+unCorte(L,L1,L2,D) :- append(L1,L2,L), sumlist(L1,S1), sumlist(L2,S2), D is abs(S1-S2).
+
+
+
+esTriangulo(tri(A,B,C)) :- A < B+C, B < A+C, C < B+A.
+
+
+perimetro(tri(A,B,C),P) :- ground(tri(A,B,C)), esTriangulo(tri(A,B,C)), P is A+B+C.
+perimetro(tri(A,B,C),P) :- not(ground(tri(A,B,C))), armarTriplas(P,A,B,C), esTriangulo(tri(A,B,C)).
+
+
+
+armarTriplas(P,A,B,C) :- desde2(3,P), between(0,P,A), S is P-A, between(0,S,B), C is S-B.
+
+
+
+triangulos(T) :- perimetro(T,_).
+
+
+
+
+
+
+
+
+%?- listaDeÁrboles(L).
+%L = [];														
+%L = [bin(nil,_,nil)]; ---> [1]
+%L = [bin(nil,_,nil), bin(nil,_,nil)]; ---> [1,1]
+%L = [bin(nil,_, bin(nil,_,nil))];  ---> [2]
+%L = [bin(bin(nil _,nil),_,nil)];   ---> [2]
+%L = [bin(nil,_,nil), bin(nil,_,nil), bin(nil,_,nil)]; --> [1,1,1]
+%---> [1,2]
+%---> [1,2]
+%---> [2,1]
+%---> [2,1]
+%---> [3]
+
+% desde(X,X).
+% desde(X,Y) :- N is X+1, desde(N,Y).
+
+% listaDeArboles(L) :- desde(0,S), listaAcotadaDeArboles(S,L).
+
+% listaAcotadaDeArboles(0,[]).
+% listaAcotadaDeArboles(S,[X|XS]) :- between(1,S,Na), 
+% 		arbolDeN(Na,X), S2 is S-Na, 
+% 		listaAcotadaDeArboles(S2,XS).
+
+
+% arbolDeN(0,nil).
+% arbolDeN(N,bin(I,_,D)) :- N > 0, N2 is N-1, paresQueSuman(N2,NI,ND), arbolDeN(NI,I), arbolDeN(ND,D).
+
+% paresQueSuman(S,X,Y) :- between(0,S,X), Y is S-X.
+
+
+% tamArbol(0,nil).
+% tamArbol(N,bin(I,_,D)) :- tamArbol(NI,I), tamArbol(ND,D), N is 1+NI+ND.
+
+% calcularTamanios(AS,TS) :- maplist(tamArbol,TS,AS).
+
+
+
+
+
+% Dado el siguiente código:
+
+% drone := Drone newWith: [:n1 :n2 | {n1+1 . n2+1}].
+% drone avanzar.
+
+% se obtiene la tabla de seguimiento de abajo.
+
+% Objeto          Mensaje         Colaboradores       Ubicación del método    Resultado
+% ------------------------------------------------------------------------------------------------
+% Drone           newWith:        [:n1 :n2 ...]       Drone                   aDrone
+% Drone           newWith:        [:n1 :n2 ...]       Robot                   aDrone
+% Drone           new             -                   Object                  aDrone
+% aDrone          initWith:       [:n1 :n2 ...]       Robot                   aDrone
+% aDrone          init            -                   Drone                   aDrone
+% aDrone          avanzar         -                   Drone                   aDrone
+% 0               <               10                  SmallInteger            True
+% true            ifTrue:         [z:=(z+1)]          True                    1
+% [z:=(z+1)]      value           -                   BlockClosure            1
+% 0               +               1                   SmallInteger            1
+% aDrone          avanzar         -                   Robot                   aDrone
+% [:n1 :n2 ...]   value: value:   0, 0                BlockClosure            #(1 1)
+% 0               +               1                   SmallInteger            1
+% 0               +               1                   SmallInteger            1
+% #(1 1)          at:             1                   OrderedCollection       1
+% #(1 1)          at:             2                   OrderedCollection       1
